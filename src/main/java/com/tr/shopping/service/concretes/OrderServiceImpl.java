@@ -109,25 +109,24 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = GeneralException.class)
     @Override
     public GeneralResponse verifyCustomerOrder(long customerId, CustomerPaymentVerifyDto customerPaymentVerifyDto) {
-        // TODO
+        // verify customer code , if verify customer code , change order status and payment status not verify code throw error
         String verifyCustomerCode=customerPaymentVerifyDto.getVerifyCode();
         CustomerPayment customerPayment = customerPaymentRepository.getCustomerPaymentByCustomerId(customerId);
         if(!customerPayment.getPaymentVerifyCode().equals(verifyCustomerCode)) throw new VerifyCodeNotMatchException();
         if(bankServiceAdapter.addPayment(customerPayment.getAccountNo(),customerPayment.getExpiry(),customerPayment.getPaymentType(),customerPayment.getProvider())){
             OrderDetail orderDetailByCustomer = orderItemDetailRepository.getOrderDetailByCustomerId(customerId);
-            OrderStatus orderStatus=new OrderStatus();
-            orderStatus.setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
-            orderDetailByCustomer.setOrderStatus(orderStatus);
+            orderDetailByCustomer.getOrderStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
+            orderDetailByCustomer.getPaymentDetail().getStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
             orderItemDetailRepository.save(orderDetailByCustomer);
-            // TODO PAYMENT STATUS CALIŞMIYOR ONU DÜZELT
+            // verify code , later delete customer verify code in customer payment table
+            customerPayment.setPaymentVerifyCode(null);
+            customerPaymentRepository.save(customerPayment);
             return new GeneralSuccessfullResponse("eşleşme başarılı ödeme yapılıyor.");
-
         }
         return new GeneralErrorResponse("Ödeme başarısız..!!.");
     }
 
     private boolean checkCustomerHasOrderByCustomerId(Long customerId) {
-
         return orderItemDetailRepository.existsOrderDetailByCustomerId(customerId);
     }
 
