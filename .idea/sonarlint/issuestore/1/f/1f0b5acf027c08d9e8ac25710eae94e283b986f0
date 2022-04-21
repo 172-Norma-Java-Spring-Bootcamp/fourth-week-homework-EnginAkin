@@ -1,0 +1,11 @@
+
+;
+java:S1165" Make this "message" field final.(ù„è¿ûÿÿÿÿ
+>
+java:S1165"#Make this "statusCode" field final.(Ç†Âßúÿÿÿÿ
+9
+java:S1116"Remove this empty statement.(ç­ž‰8«ì·éƒ0
+F
+java:S1068"+Remove this unused "message" private field.(ù„è¿ûÿÿÿÿ
+I
+java:S1068".Remove this unused "statusCode" private field.(Ç†Âßúÿÿÿÿ

@@ -1,0 +1,18 @@
+
+Y
+java:S1128"<Remove this unused import 'com.tr.shopping.entity.Customer'.(š†ñú8ÖëÀÙ„0
+a
+java:S1128"?Remove this unused import 'com.tr.shopping.entity.OrderStatus'.(®“šÏıÿÿÿÿ8ËÙ„Ú„0
+c
+java:S1128"ARemove this unused import 'com.tr.shopping.entity.PaymentDetail'.(ˆî¿‡ıÿÿÿÿ8ĞÎÀÙ„0
+`
+java:S1128">Remove this unused import 'com.tr.shopping.entity.ShipMethod'.(†ÀÉ§ûÿÿÿÿ8º¶„Ú„0
+P
+java:S1128
+":Remove this unused import 'javax.persistence.CascadeType'.( ì¤Ê
+T
+java:S1128"7Remove this unused import 'javax.persistence.OneToOne'.(Ø½ïâ8ØëÀÙ„0
+R
+java:S1128"7Remove this unused import 'javax.persistence.Temporal'.(…ò­“üÿÿÿÿ
+V
+java:S1128";Remove this unused import 'javax.persistence.TemporalType'.(×ÓÛøÿÿÿÿ
