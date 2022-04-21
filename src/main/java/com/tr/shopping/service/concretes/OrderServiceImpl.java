@@ -85,20 +85,7 @@ public class OrderServiceImpl implements OrderService {
                 +" METHOD PUT localhost:8082/customer/{customerId}/payment/verify");
 
     }
-
-
-    /*
-       CustomerPayment customerPayment=customerPaymentRepository.getCustomerPaymentByCustomerId(orderItemDto.getCustomerId());
-        // get customer payment accept code later process
-        // wait 1 minute later accept payment senarios
-      if(bankServiceAdapter.addPayment(customerPayment.getAccountNo(),customerPayment.getExpiry(),customerPayment.getPaymentType(),customerPayment.getProvider())) {
-            orderStatus.setName(OrderConstant.ORDER_STATUS_PROCESS);
-            orderItem.getOrderDetail().setOrderStatus(orderStatus);
-            orderItemRepository.save(orderItem);
-        }
-
-     */
-
+    
     @Override
     public GeneralResponse getCustomerOrderById(long customerId) {
         if(!checkCustomerHasOrderByCustomerId(customerId)) throw new OrderCannotFoundException();
@@ -121,9 +108,9 @@ public class OrderServiceImpl implements OrderService {
             // verify code , later delete customer verify code in customer payment table
             customerPayment.setPaymentVerifyCode(null);
             customerPaymentRepository.save(customerPayment);
-            return new GeneralSuccessfullResponse("eşleşme başarılı ödeme yapılıyor.");
+            return new GeneralSuccessfullResponse("Code verified.Payment Successfull");
         }
-        return new GeneralErrorResponse("Ödeme başarısız..!!.");
+        return new GeneralErrorResponse("Payment unsuccessfull.!!.");
     }
 
     private boolean checkCustomerHasOrderByCustomerId(Long customerId) {
