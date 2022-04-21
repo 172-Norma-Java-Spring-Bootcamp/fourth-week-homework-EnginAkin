@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
 
         // order status
         OrderStatus orderStatus=new OrderStatus();
-        orderStatus.setName(OrderConstant.ORDER_STATUS_VIEWED);
+        orderStatus.setName(OrderConstant.ORDER_STATUS_PROCESS);
 
         // shippin method
         ShipMethod shipMethodUpfs=new ShipMethod();
@@ -80,12 +80,12 @@ public class OrderServiceImpl implements OrderService {
         customerPayment.setPaymentVerifyCode(verifyCode);
         customerPaymentRepository.save(customerPayment); // send verify code for payment
 
-        return new GeneralSuccessfullResponse("Please verify code for payment. your payment repository." +
-                 "get verify code your customer payment METHOD GET  localhost:8082/customers/{customerId}/payments/code"
+        return new GeneralSuccessfullResponse("Please verify code for payment. your payment repository. \b" +
+                 "get verify code your customer payment METHOD GET  localhost:8082/customers/{customerId}/payments/code \b"
                 +" METHOD PUT localhost:8082/customer/{customerId}/payment/verify");
 
     }
-    
+
     @Override
     public GeneralResponse getCustomerOrderById(long customerId) {
         if(!checkCustomerHasOrderByCustomerId(customerId)) throw new OrderCannotFoundException();
