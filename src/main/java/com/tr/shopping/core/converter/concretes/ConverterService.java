@@ -1,6 +1,7 @@
 package com.tr.shopping.core.converter.concretes;
 
 import com.tr.shopping.core.converter.abstracts.*;
+import com.tr.shopping.entity.CustomerCoupon;
 import com.tr.shopping.entity.CustomerPayment;
 import com.tr.shopping.entity.OrderItem;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class ConverterService {
     private final CategoryConverterService categoryConverterService;
     private final PaymentConverterService paymentConverterService;
     private final OrderDetailConverterService orderDetailConverterService;
-
+    private final CustomerCouponConverterService customerCouponConverterService;
 
 
 }

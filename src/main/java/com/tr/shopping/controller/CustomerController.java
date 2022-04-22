@@ -1,6 +1,8 @@
 package com.tr.shopping.controller;
 
+import com.tr.shopping.core.model.dto.CustomerCouponDto;
 import com.tr.shopping.core.model.dto.CustomerPaymentDto;
+import com.tr.shopping.entity.CustomerCoupon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -29,10 +31,20 @@ public class CustomerController {
         return customerService.createCustomer(customerDto);
 
     }
+
+    @GetMapping(path = "{id}")
+    public GeneralResponse getCustomerWithId(@PathVariable(value = "id") @Min(0) int id){
+        return customerService.getCustomerById(id);
+    }
+
+    @GetMapping(path = "{id}/address")
+    public GeneralResponse getCustomerAddress(@PathVariable(value = "id") @Min(0) int id){
+        return customerService.getCustomerAddress(id);
+    }
+
     @PostMapping(path = "/{customerId}/payment")
     public GeneralResponse addCustomerPayment(@PathVariable(value = "customerId") int customerId,@RequestBody CustomerPaymentDto customerPaymentDto){
-        System.out.println("gelen değer "+customerId);
-        return customerService.addCustomerPayment(customerPaymentDto, (long) customerId);
+        return customerService.addCustomerPayment(customerPaymentDto,customerId);
 
     }
 
@@ -40,15 +52,6 @@ public class CustomerController {
     @GetMapping(path = "/{id}/code")
     public GeneralResponse getCustomerVerifyCode(@PathVariable("id") int customerId){
         return customerService.getCustomerVerifyCode(customerId);
-    }
-
-    @GetMapping(path = "{id}/address")
-    public GeneralResponse getCustomerAddress(@PathVariable(value = "id") @Min(0) int id){
-        return customerService.getCustomerAddress((long) id);
-    }
-    @GetMapping(path = "{id}")
-    public GeneralResponse getCustomerWithId(@PathVariable(value = "id") @Min(0) int id){
-        return customerService.getCustomerById(id);
     }
 
     @GetMapping
@@ -59,20 +62,27 @@ public class CustomerController {
 
     @PutMapping(path = "/{id}/delete")
     public GeneralResponse deleteCustomerById(@PathVariable("id") @Min(0) int customerId){
-        return customerService.deleteCustomerById((long) customerId);
+        return customerService.deleteCustomerById(customerId);
     }
 
     @PostMapping(path = "/{customerId}/basket")
     public GeneralResponse addBasketItemToBasket(@PathVariable("customerId") int customerId, @RequestBody BasketItemDto basketItemDto){
         return customerService.addBasketItemToCustomerBasket(basketItemDto,customerId);
     }
+
     @GetMapping(path = "/{customerId}/basket")
     public GeneralResponse getBasketItem(@PathVariable("customerId") int customerId){
-        return customerService.getCustomerBasket((long)customerId);
+        return customerService.getCustomerBasket(customerId);
     }
+
     @GetMapping(path = "/{customerId}/products")
     public GeneralResponse getCustomerProducts(@PathVariable("customerId") int customerId){
-        return customerService.getCustomerProduct((long)customerId);
+        return customerService.getCustomerProduct(customerId);
+    }
+
+    @PostMapping("coupons/{customerId}")
+    public GeneralResponse createCouponForCustomer(@PathVariable("customerId") int customerId, @RequestBody CustomerCouponDto customerCouponDto){
+        return customerService.createCouponForCustomer(customerId,customerCouponDto);
     }
 
 

@@ -15,6 +15,7 @@ import com.tr.shopping.core.model.response.CustomerResponse;
 import com.tr.shopping.repository.CustomerRepository;
 import com.tr.shopping.repository.ProductRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Service

@@ -4,6 +4,9 @@ package com.tr.shopping.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,8 +26,16 @@ public class Customer extends BaseExtendedModel {
     @OneToOne(cascade = CascadeType.ALL)
     private Basket basket;
 
-  //  private Promot
+    @OneToMany(mappedBy = "customer")
+    private List<CustomerCoupon> coupons;
+
+    public void addCouponCustomer(CustomerCoupon customerCoupon){
+        if (coupons == null) {
+            coupons = new ArrayList<>();
+        }
+        coupons.add(customerCoupon);
 
 
+    }
 
 }

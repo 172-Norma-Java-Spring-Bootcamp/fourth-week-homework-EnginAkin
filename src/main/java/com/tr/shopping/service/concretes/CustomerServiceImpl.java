@@ -1,8 +1,9 @@
 package com.tr.shopping.service.concretes;
 
+import com.tr.shopping.core.model.dto.CustomerCouponDto;
 import com.tr.shopping.core.model.dto.CustomerPaymentDto;
-import com.tr.shopping.entity.CustomerPayment;
-import com.tr.shopping.repository.CustomerPaymentRepository;
+import com.tr.shopping.entity.*;
+import com.tr.shopping.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,16 +13,11 @@ import com.tr.shopping.core.exception.*;
 import com.tr.shopping.core.response.GeneralDataResponse;
 import com.tr.shopping.core.response.GeneralResponse;
 import com.tr.shopping.core.response.GeneralSuccessfullResponse;
-import com.tr.shopping.entity.Basket;
-import com.tr.shopping.entity.BasketItem;
-import com.tr.shopping.entity.Customer;
 import com.tr.shopping.core.model.dto.BasketItemDto;
 import com.tr.shopping.core.model.dto.CustomerDto;
 import com.tr.shopping.core.model.response.BasketResponse;
 import com.tr.shopping.core.model.response.CustomerResponse;
 import com.tr.shopping.core.model.response.ProductResponse;
-import com.tr.shopping.repository.CustomerRepository;
-import com.tr.shopping.repository.ProductRepository;
 import com.tr.shopping.service.abstracts.CustomerService;
 
 import java.math.BigDecimal;
@@ -36,9 +32,11 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerCouponRepository customerCouponRepository;
     private final ProductRepository productRepository;
     private final ConverterService converterService;
     private final CustomerPaymentRepository customerPaymentRepository;
+    private final CategoryRepository categoryRepository;
 
 
 
@@ -49,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
        return new GeneralSuccessfullResponse(CustomerResponseMessage.CUSTOMER_CREATED_SUCCESSFULL);
     }
     @Override
-    public GeneralResponse addCustomerPayment(CustomerPaymentDto customerPaymentDto,Long customerId) {
+    public GeneralResponse addCustomerPayment(CustomerPaymentDto customerPaymentDto,long customerId) {
         if(!customerRepository.existsById(customerId)) throw new CustomerIdCannotFountException();
         Customer customer=customerRepository.findById(customerId).get();
         CustomerPayment customerPayment=converterService.getPaymentConverterService().customerPaymentDtoToCustomerPayment(customerPaymentDto,customer);
@@ -61,13 +59,24 @@ public class CustomerServiceImpl implements CustomerService {
     public GeneralResponse getCustomerVerifyCode(long customerId) {
         if(!checkCustomerIdFound(customerId)) throw new CustomerIdCannotFountException();
         if(checkCustomerIsDeleted(customerId)) throw new CustomerDeletedException();
-        return new GeneralDataResponse<>(customerPaymentRepository.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode());
+        return new GeneralDataResponse<>(customerPaymentRepository.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode(),true,"verified code getting");
     }
 
-
+    @Override
+    public GeneralResponse createCouponForCustomer(long customerId, CustomerCouponDto customerCouponDto) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerIdCannotFountException::new);
+        CustomerCoupon coupon=converterService.getCustomerCouponConverterService().customerCouponDtoToCustomerCoupon(customerCouponDto);
+        Category category=categoryRepository.getCategoryByName(customerCouponDto.getCategory().getName());
+        if(Objects.isNull(category)) throw new CategoryCannotFoundException();
+        coupon.setCategory(category);
+        coupon.setCustomer(customer);
+        customer.addCouponCustomer(coupon);
+        customerCouponRepository.save(coupon);
+        return new GeneralSuccessfullResponse("Cupon created successfull");
+    }
 
     @Override
-    public GeneralResponse getCustomerAddress(Long id) {
+    public GeneralResponse getCustomerAddress(long id) {
         if(customerRepository.existsById(id)){
             if(checkCustomerIsDeleted(id)) throw new CustomerDeletedException(CustomerResponseMessage.CUSTOMER_CANNOT_ACCESS_DELETED_EXCEPTION);
             Customer customer=customerRepository.getById(id);

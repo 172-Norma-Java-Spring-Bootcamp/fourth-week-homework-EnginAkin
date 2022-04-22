@@ -18,9 +18,5 @@ public class Category  extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
     private Category parent;
 
-    @Override
-    public String toString() {
-        if(!Objects.isNull(parent)) return "-> name='" + name + '\''+parent;
-        return " name ->"+name;
-    }
+
 }

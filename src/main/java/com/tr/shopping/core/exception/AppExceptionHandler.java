@@ -71,6 +71,12 @@ public class AppExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategoryCannotFoundException.class)
+    public GeneralErrorResponse handlerCategoryCannotFoundException(CategoryCannotFoundException exception){
+        return new GeneralErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ProductIdCannotFoundException.class)
     public GeneralErrorResponse handlerProductIdCannotFoundException(ProductIdCannotFoundException exception){
         return new GeneralErrorResponse(exception.getMessage());

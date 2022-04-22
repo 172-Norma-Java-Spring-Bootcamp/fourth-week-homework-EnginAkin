@@ -22,4 +22,5 @@ public class CustomerResponseMessage {
 
 
     public static final String CUSTOMER_VERIFY_CODE_NOT_MATCH_EXCEPTION = "Verify code not match , please try it again!!!";
+    public static final String CATEGORY_CANNOT_FOUND_EXCEPTION = "Category cannot found";
 }

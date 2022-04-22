@@ -44,6 +44,9 @@ public class OrderServiceImpl implements OrderService {
         Basket basket = basketRepository.findById(orderItemDto.getBasketId()).get();
         Customer customer = customerRepository.findById(orderItemDto.getCustomerId()).get();
         CustomerPayment customerPayment=customerPaymentRepository.getCustomerPaymentByCustomerId(orderItemDto.getCustomerId());
+        // TODO kullanıcıya ait indirim varsa sipariş tutarına eklenmesi lazım.
+        
+
 
         // payment status
         PaymentStatus paymentStatus=new PaymentStatus();
