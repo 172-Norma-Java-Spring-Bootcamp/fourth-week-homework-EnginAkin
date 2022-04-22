@@ -1,16 +1,0 @@
-
-_
-java:S1128"=Remove this unused import 'com.tr.shopping.entity.BaseModel'.(¼éµÏøÿÿÿÿ8œ×„Æ„0
-Y
-java:S1128"<Remove this unused import 'com.tr.shopping.entity.Customer'.(š†ñú8Çž…Æ„0
-W
-java:S1128"5Remove this unused import 'javax.persistence.Entity'.(úƒßýûÿÿÿÿ8”Á„Æ„0
-T
-java:S1128	"7Remove this unused import 'javax.persistence.OneToOne'.(Ø½ïâ8”Á„Æ„0
-Y
-java:S1128
-"7Remove this unused import 'javax.persistence.Temporal'.(…ò­“üÿÿÿÿ8ô‚†Æ„0
-]
-java:S1128";Remove this unused import 'javax.persistence.TemporalType'.(×ÓÛøÿÿÿÿ8ô‚†Æ„0
-H
-java:S1128"+Remove this unused import 'java.util.Date'.(¸…¼ü8®±¯Æ„0

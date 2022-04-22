@@ -18,7 +18,6 @@ public class ProductController {
     public GeneralResponse createProduct(@RequestBody ProductDto productDto)throws AddingProductNonExistCategoryException {
         return productService.createProduct(productDto);
     }
-
     @DeleteMapping(path = "/{productId}")
     public GeneralResponse deleteProduct(@PathVariable("productId") int id){
         return productService.deleteProductById((long)id);
@@ -29,7 +28,6 @@ public class ProductController {
     }
     @GetMapping
     public GeneralResponse getProducts(){
-        System.out.println("gelen değer ");
         return productService.getAllProducts();
     }
 

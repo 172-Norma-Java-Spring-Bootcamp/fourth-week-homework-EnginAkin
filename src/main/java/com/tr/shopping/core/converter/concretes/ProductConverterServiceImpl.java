@@ -16,8 +16,6 @@ import java.util.UUID;
 @Service
 public class ProductConverterServiceImpl implements ProductConverterService {
 
-
-
     @Override
     public Product productDtoToProduct(ProductDto productDto) {
         Product product=new Product();
@@ -31,7 +29,6 @@ public class ProductConverterServiceImpl implements ProductConverterService {
         product.setBarcode(uuid);
         return product;
     }
-
     @Override
     public ProductDto productToProductDto(Product product) {
         ProductDto productDto=new ProductDto();
@@ -42,7 +39,6 @@ public class ProductConverterServiceImpl implements ProductConverterService {
         productDto.setBrand(product.getBrand());
         return productDto;
     }
-
     @Override
     public ProductResponse productToProductResponse(Product product) {
         ProductResponse productResponse=new ProductResponse();
