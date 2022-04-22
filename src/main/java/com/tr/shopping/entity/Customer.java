@@ -23,6 +23,8 @@ public class Customer extends BaseExtendedModel {
     @OneToOne(cascade = CascadeType.ALL)
     private Basket basket;
 
+  //  private Promot
+
 
 
 }

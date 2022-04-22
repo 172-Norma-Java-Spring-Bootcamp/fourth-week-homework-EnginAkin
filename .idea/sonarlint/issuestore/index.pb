@@ -51,12 +51,6 @@ n
 >src/main/java/com/tr/shopping/core/model/dto/OrderItemDto.java,2\a\2aaccfdbc7cdc2aa93831622b90cc4e8a3913123
 w
 Gsrc/main/java/com/tr/shopping/repository/OrderItemDetailRepository.java,f\8\f8565bddd88aedef95ee49fe3253c43b29c93a7a
-{
-Ksrc/main/java/com/tr/shopping/service/abstracts/CustomerPaymentService.java,8\2\82f5a21a493ab2fffba8dc8fd98d2de23d00bdcc
-
-Osrc/main/java/com/tr/shopping/service/concretes/CustomerPaymentServiceImpl.java,8\d\8dc29951259c4c4200fe5185235eb71b924b26f4
-w
-Gsrc/main/java/com/tr/shopping/controller/CustomerPaymentController.java,c\f\cf824e2ae938682f7812480ab5665b087f81501b
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
 x

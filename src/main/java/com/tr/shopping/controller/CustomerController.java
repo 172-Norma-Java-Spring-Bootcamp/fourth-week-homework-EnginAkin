@@ -1,12 +1,8 @@
 package com.tr.shopping.controller;
 
 import com.tr.shopping.core.model.dto.CustomerPaymentDto;
-import com.tr.shopping.core.model.dto.CustomerPaymentVerifyDto;
-import com.tr.shopping.service.abstracts.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.Order;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.tr.shopping.core.response.GeneralResponse;
