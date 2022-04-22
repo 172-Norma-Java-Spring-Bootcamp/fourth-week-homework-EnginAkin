@@ -1,0 +1,13 @@
+
+E
+java:S5411v"*Use the primitive boolean expression here.(ÑšĞ²ùÿÿÿÿ
+
+java:S2681-"†This line will not be executed conditionally; only the first line of this 2-line block will be. The rest will execute unconditionally.(®µÔ­
+f
+java:S3655-"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(®µÔ­
+f
+java:S3655."PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(Ùºø‰
+l
+java:S3655Š"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(©ÂİÌüÿÿÿÿ
+`
+java:S1155d">Use isEmpty() to check whether the collection is empty or not.(æÀö€øÿÿÿÿ8ĞÜôŒ…0
