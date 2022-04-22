@@ -5,19 +5,19 @@ import com.tr.shopping.core.converter.concretes.ConverterService;
 import com.tr.shopping.core.exception.*;
 import com.tr.shopping.core.model.dto.CustomerPaymentVerifyDto;
 import com.tr.shopping.core.model.dto.OrderItemDto;
+import com.tr.shopping.core.model.response.OrderResponse;
 import com.tr.shopping.core.response.GeneralDataResponse;
 import com.tr.shopping.core.response.GeneralErrorResponse;
 import com.tr.shopping.core.response.GeneralResponse;
 import com.tr.shopping.core.response.GeneralSuccessfullResponse;
 import com.tr.shopping.entity.*;
 import com.tr.shopping.repository.*;
+import com.tr.shopping.service.abstracts.CustomerDiscountService;
 import com.tr.shopping.service.abstracts.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemDetailRepository orderItemDetailRepository;
     private final BankServiceAdapter bankServiceAdapter;
     private final ConverterService converterService;
+    private final CustomerDiscountService customerDiscountService;
 
 
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = GeneralException.class)
@@ -44,10 +45,6 @@ public class OrderServiceImpl implements OrderService {
         Basket basket = basketRepository.findById(orderItemDto.getBasketId()).get();
         Customer customer = customerRepository.findById(orderItemDto.getCustomerId()).get();
         CustomerPayment customerPayment=customerPaymentRepository.getCustomerPaymentByCustomerId(orderItemDto.getCustomerId());
-        // TODO kullanıcıya ait indirim varsa sipariş tutarına eklenmesi lazım.
-        
-
-
         // payment status
         PaymentStatus paymentStatus=new PaymentStatus();
         paymentStatus.setName(OrderConstant.ORDER_STATUS_PENDING);
@@ -70,12 +67,17 @@ public class OrderServiceImpl implements OrderService {
         orderItem.setBasket(basket);
 
         OrderDetail orderDetail=new OrderDetail();
+        // check if customer has a promotion
+        if(checkCustomerHasPromotion(customer)){
+            orderDetail.setTotalAmount(customerDiscountService.applyDiscount(customer.getCoupons().get(0),basket.getTotalPrice()));
+        }else{// no discount customer
+            orderDetail.setTotalAmount(basket.getTotalPrice());
+        }
         orderDetail.setOrderStatus(orderStatus);
         orderDetail.setCreationDate(new Date());
         orderDetail.setCustomer(customer);
         orderDetail.setPaymentDetail(paymentDetail);
         orderDetail.setShipMethod(shipMethodUpfs);
-        orderDetail.setTotalAmount(basket.getTotalPrice());
         orderItem.setOrderDetail(orderDetail);
 
         orderItemRepository.save(orderItem);
@@ -83,10 +85,18 @@ public class OrderServiceImpl implements OrderService {
         customerPayment.setPaymentVerifyCode(verifyCode);
         customerPaymentRepository.save(customerPayment); // send verify code for payment
 
-        return new GeneralSuccessfullResponse("Please verify code for payment. your payment repository. \b" +
-                 "get verify code your customer payment METHOD GET  localhost:8082/customers/{customerId}/payments/code \b"
-                +" METHOD PUT localhost:8082/customer/{customerId}/payment/verify");
-
+        // create response
+        OrderResponse orderResponse=new OrderResponse();
+        orderResponse.setOrderStatus("needed complete order with complete payment");
+        orderResponse.setPaymentStatus("needed verify payment with code");
+        orderResponse.setPaymentAmount(orderDetail.getTotalAmount());
+        orderResponse.setTotalAmount(basket.getTotalPrice());
+        orderResponse.setApplyedDiscount(basket.getTotalPrice().subtract(orderDetail.getTotalAmount()));
+        return new GeneralDataResponse<>("successfull order create",true,orderResponse);
+    }
+    private boolean checkCustomerHasPromotion(Customer customer) {
+        // check categori is equals product category
+        return customer.getCoupons().size()>0 ;
     }
 
     @Override
@@ -99,16 +109,18 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = GeneralException.class)
     @Override
     public GeneralResponse verifyCustomerOrder(long customerId, CustomerPaymentVerifyDto customerPaymentVerifyDto) {
-        // verify customer code , if verify customer code , change order status and payment status not verify code throw error
+        // verify customer code , if verify customer code , change order status and payment status , not verify code throw error
         String verifyCustomerCode=customerPaymentVerifyDto.getVerifyCode();
         CustomerPayment customerPayment = customerPaymentRepository.getCustomerPaymentByCustomerId(customerId);
         if(!customerPayment.getPaymentVerifyCode().equals(verifyCustomerCode)) throw new VerifyCodeNotMatchException();
+
+        // this senario like add payment ziraat bank and wait response
         if(bankServiceAdapter.addPayment(customerPayment.getAccountNo(),customerPayment.getExpiry(),customerPayment.getPaymentType(),customerPayment.getProvider())){
             OrderDetail orderDetailByCustomer = orderItemDetailRepository.getOrderDetailByCustomerId(customerId);
             orderDetailByCustomer.getOrderStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
             orderDetailByCustomer.getPaymentDetail().getStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
             orderItemDetailRepository.save(orderDetailByCustomer);
-            // verify code , later delete customer verify code in customer payment table
+            // verified code ,  delete customer verify code in customer payment table
             customerPayment.setPaymentVerifyCode(null);
             customerPaymentRepository.save(customerPayment);
             return new GeneralSuccessfullResponse("Code verified.Payment Successfull");
@@ -119,7 +131,6 @@ public class OrderServiceImpl implements OrderService {
     private boolean checkCustomerHasOrderByCustomerId(Long customerId) {
         return orderItemDetailRepository.existsOrderDetailByCustomerId(customerId);
     }
-
     private boolean checkBasketNonExists(Long basketId) {
         return !basketRepository.existsById(basketId);
     }

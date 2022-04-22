@@ -26,7 +26,6 @@ public class OrderController {
 
     @GetMapping("/{customerId}")
     private GeneralResponse getCustomerOrder(@PathVariable("customerId") int customerId){
-        System.out.println("gelen değer "+customerId);
         return orderService.getCustomerOrderById(customerId);
     }
 
