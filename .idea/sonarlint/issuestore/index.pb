@@ -39,8 +39,6 @@ Gsrc/main/java/com/tr/shopping/repository/OrderItemDetailRepository.java,f\8\f8
 Msrc/main/java/com/tr/shopping/core/exception/VerifyCodeNotMatchException.java,9\6\96e8633326ebee9bb1c32eb92991a3e5f43cf721
 t
 Dsrc/main/java/com/tr/shopping/service/abstracts/CategoryService.java,2\6\26288f099c8f0e8bdd9ba2887ace597883cc24dc
-x
-Hsrc/main/java/com/tr/shopping/service/concretes/CategoryServiceImpl.java,5\3\5309a42f9f291610c5f96b2f40d5dd54c6baf2a5
 g
 7src/main/java/com/tr/shopping/entity/PaymentDetail.java,7\3\731012bf00881eb04b1dcd1991a7e9974497f0af
 d
@@ -57,8 +55,6 @@ i
 9src/main/java/com/tr/shopping/entity/CustomerAddress.java,2\0\20b4ac745d53976a94a2095f453f6c3397b5a092
 _
 /src/main/java/com/tr/shopping/entity/Brand.java,2\3\23402fb70f61133899d73b4e4d46c42e9e958f67
-w
-Gsrc/main/java/com/tr/shopping/service/concretes/ProductServiceImpl.java,b\a\ba0de2e296715d690c021a6cdb149a5d68fa5672
 s
 Csrc/main/java/com/tr/shopping/service/abstracts/ProductService.java,6\b\6be8cbfe2f242c1665e55c6e8acb2e92e6744839
 `
@@ -87,18 +83,12 @@ Esrc/main/java/com/tr/shopping/core/exception/AppExceptionHandler.java,d\f\df44
 0src/main/java/com/tr/shopping/entity/Basket.java,9\d\9d46d396ef9e654af809a8afcbc1fa70681b1956
 e
 5src/main/java/com/tr/shopping/entity/OrderDetail.java,7\1\712181939350652fbbc6db271e51270203a2cca3
-u
-Esrc/main/java/com/tr/shopping/service/concretes/OrderServiceImpl.java,f\4\f4ad8a830e51fe1beb7721a8b94c63215f18305b
 q
 Asrc/main/java/com/tr/shopping/service/abstracts/OrderService.java,3\2\323fb3e137320448475af48998077d049e0231d2
-x
-Hsrc/main/java/com/tr/shopping/service/concretes/CustomerServiceImpl.java,a\2\a26a7c5a994624f5c7ab6f0711345088f3a6b89b
 t
 Dsrc/main/java/com/tr/shopping/core/model/response/OrderResponse.java,6\c\6cdc63a2361cab6354b48ea51044f498d11419f7
 |
 Lsrc/main/java/com/tr/shopping/service/abstracts/CustomerDiscountService.java,b\d\bdd9dc80459b4e769740f9aca4a3a82f2b6323d9
-€
-Psrc/main/java/com/tr/shopping/service/concretes/CustomerDiscountServiceImpl.java,5\d\5da0e82ce874291242583ba08f6fb1174731ff22
 c
 3src/main/java/com/tr/shopping/entity/OrderItem.java,6\5\658c8ddbfd20a8e8f8f2e881550cd9603080b618
 v

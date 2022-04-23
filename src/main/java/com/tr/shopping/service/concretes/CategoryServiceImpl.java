@@ -23,21 +23,21 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ConverterService converterService;
 
-
     @Override
     public GeneralResponse createCategory(CategoryDto categoryDto) {
         Category category= converterService.getCategoryConverterService().categoryDtoToCategory(categoryDto);
-        if(categoryRepository.getCategoryByName(category.getName()) == null){  //// check category name , if dont have then create category
+        if(categoryRepository.getCategoryByName(category.getName()) == null){
             Category categoryByName= FindParentCategory(category);
+            log.info("Category saved successfull : {}",categoryDto.getName());
             if(categoryByName==null){
-                 categoryRepository.save(category);
+                categoryRepository.save(category);
                 return new GeneralSuccessfullResponse(CategoryResponseMessage.CATEGORY_CREATE_CATEGORY_SUCCESSFULL);
             }
             category.setParent(categoryByName);
             categoryRepository.save(category);
             return new GeneralSuccessfullResponse(CategoryResponseMessage.CATEGORY_CREATE_CATEGORY_SUCCESSFULL);
         }
-        // check category name , if already have then dont create category
+        log.info("Error : Category already have in database : {}",categoryDto.getName());
         return new GeneralErrorResponse(CategoryResponseMessage.CATEGORY_CREATE_CATEGORY_UNSUCCESSFULL);
     }
 
@@ -45,7 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     private Category FindParentCategory(Category category){
-
         if(Objects.isNull(category)) return null;
         Category categoryByName = categoryRepository.getCategoryByName(category.getName());
         if(categoryByName!=null) {

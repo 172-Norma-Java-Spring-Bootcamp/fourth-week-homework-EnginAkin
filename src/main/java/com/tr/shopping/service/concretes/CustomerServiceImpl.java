@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
-
     private final CustomerRepository customerRepository;
     private final CustomerCouponRepository customerCouponRepository;
     private final ProductRepository productRepository;
@@ -43,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public GeneralResponse createCustomer(CustomerDto customerDto) {
         Customer customer=converterService.getCustomerConverterService().customerDtoToCustomer(customerDto);
+        log.info("customer {} saved successfull in dataabase ",customer.getEmail());
         customerRepository.saveAndFlush(customer);
        return new GeneralSuccessfullResponse(CustomerResponseMessage.CUSTOMER_CREATED_SUCCESSFULL);
     }
@@ -51,6 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(!customerRepository.existsById(customerId)) throw new CustomerIdCannotFountException();
         Customer customer=customerRepository.findById(customerId).get();
         CustomerPayment customerPayment=converterService.getPaymentConverterService().customerPaymentDtoToCustomerPayment(customerPaymentDto,customer);
+        log.info("customer {} ->  payment saved successfull in customer payment database ",customer.getEmail());
         customerPaymentRepository.save(customerPayment);
         return new GeneralSuccessfullResponse("created payment successfull");
     }
@@ -59,7 +60,8 @@ public class CustomerServiceImpl implements CustomerService {
     public GeneralResponse getCustomerVerifyCode(long customerId) {
         if(!checkCustomerIdFound(customerId)) throw new CustomerIdCannotFountException();
         if(checkCustomerIsDeleted(customerId)) throw new CustomerDeletedException();
-        return new GeneralDataResponse<>(customerPaymentRepository.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode(),true,"verified code getting");
+        log.info("Customer verified code returned successfull");
+        return new GeneralDataResponse<>(customerPaymentRepository.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode(),true,"Customer verified code returned successful");
     }
 
     @Override
@@ -72,6 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
         coupon.setCustomer(customer);
         customer.addCouponCustomer(coupon);
         customerCouponRepository.save(coupon);
+        log.info("Customer coupon created successfull for ->",customer.getEmail());
         return new GeneralSuccessfullResponse("Cupon created successfull");
     }
 
@@ -80,14 +83,18 @@ public class CustomerServiceImpl implements CustomerService {
         if(customerRepository.existsById(id)){
             if(checkCustomerIsDeleted(id)) throw new CustomerDeletedException(CustomerResponseMessage.CUSTOMER_CANNOT_ACCESS_DELETED_EXCEPTION);
             Customer customer=customerRepository.getById(id);
+            log.info("Customer addresses returned successful  ->",customer.getCustomerAddress());
             return new GeneralDataResponse<>(CustomerResponseMessage.CUSTOMER_REQUEST_SUCCESSFULL,true,customer.getCustomerAddress());
         }
+        log.info("Customer addresses returned failed ,  Customer id cannot found ->");
         throw  new CustomerIdCannotFountException(CustomerResponseMessage.CUSTOMER_ID_CANNOT_FOUND_EXCEPTION);
     }
 
     @Override
     public GeneralResponse getCustomerById(long id) {
         if(checkCustomerIsDeleted(id)) throw new CustomerDeletedException(CustomerResponseMessage.CUSTOMER_CANNOT_ACCESS_DELETED_EXCEPTION);
+        log.info("Customer returned successfull ");
+
         return new GeneralDataResponse<>(converterService.getCustomerConverterService().customerToCustomerResponse(customerRepository.findById(id).get()));
     }
 
@@ -100,6 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setDeletedBy("EnginAkin");
             customer.setIsDeleted(true);
             customerRepository.save(customer);
+            log.info("Customer deleted successfull {} ->",customer.getEmail());
             return new GeneralSuccessfullResponse(CustomerResponseMessage.CUSTOMER_DELETED_SUCCESSFULL);
         }
         throw new CustomerIdCannotFountException();
@@ -111,20 +119,22 @@ public class CustomerServiceImpl implements CustomerService {
         if(compareAddedQuantityToProductQuantity(basketItemDto.getProductId(),basketItemDto.getQuantity())) throw new CustomerBasketQuantityException();
         Customer customer=customerRepository.findById(customerId).get();
         BasketItem basketItem=converterService.getCustomerConverterService().basketItemDtoToBasket(basketItemDto,customerId);
-        if(Objects.isNull(customer.getBasket())){// sepet yoksa sepet oluşturulmalı varsa olan sepete eklenmeli
+        if(Objects.isNull(customer.getBasket())){
             Basket basket=new Basket();
             basketItem.setBasket(basket);
             basketItem.calculateBasketItemPrice();
             basket.addBasketItemToBasket(basketItem);
             customer.setBasket(basket);
             customerRepository.save(customer);
-            return new GeneralSuccessfullResponse("basket items added successfull");
+            log.info("Customer basket created and basket item added to basket successfull->{}",customer.getEmail());
+            return new GeneralSuccessfullResponse("basket item added to basket  successfull");
         }
         basketItem.setBasket(customer.getBasket());
         basketItem.calculateBasketItemPrice();
         customer.getBasket().addBasketItemToBasket(basketItem);
         customerRepository.save(customer);
-        return new GeneralSuccessfullResponse("basket items added successfull");
+        log.info("basket item added to basket  successfull ->{}",customer.getEmail());
+        return new GeneralSuccessfullResponse("basket item added to basket  successfull");
     }
 
     @Override
@@ -133,6 +143,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(!customerRepository.existsById(customerId)) throw new CustomerIdCannotFountException();
         Basket customerBasketById=customerRepository.findById(customerId).get().getBasket();
         BasketResponse basketResponse =converterService.getBasketConverterService().basketToBasketResponse(customerBasketById);
+        log.info("Returned basket response successfull.");
         return new GeneralDataResponse("Getting basket is successfull",true, basketResponse);
     }
 
@@ -141,8 +152,8 @@ public class CustomerServiceImpl implements CustomerService {
         if(!customerRepository.existsById(customerId)) throw new CustomerIdCannotFountException();
         Basket basket = customerRepository.findById(customerId).get().getBasket();
         if(Objects.isNull(basket)) throw new CustomerBasketNullException();
-
         List<ProductResponse> products=basket.getItems().stream().map(basketItem-> converterService.getProductConverterService().productToProductResponse(basketItem.getProduct())).collect(Collectors.toList());
+        log.info("getCustomerProduct : customer basket items :{} ",products);
         return new GeneralDataResponse("Getting products is successfully",true,products);
     }
 
@@ -150,6 +161,7 @@ public class CustomerServiceImpl implements CustomerService {
     public GeneralResponse getAllCustomer() {
         List<Customer> customers = customerRepository.getCustomerUnDeleted();
         List<CustomerResponse> customerResponses=customers.stream().map(customer -> converterService.getCustomerConverterService().customerToCustomerResponse(customer)).collect(Collectors.toList());
+        log.info("get all customer : successfull returned all customer ");
         return new GeneralDataResponse<>(CustomerResponseMessage.CUSTOMER_REQUEST_SUCCESSFULL,true,customerResponses);
     }
 

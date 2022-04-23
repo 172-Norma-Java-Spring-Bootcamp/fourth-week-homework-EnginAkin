@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository productRepository;
     private final ConverterService converterService;
     private final CategoryRepository categoryRepository;
@@ -37,29 +36,34 @@ public class ProductServiceImpl implements ProductService {
     public GeneralResponse getProductById(Long id) {
         if(!productRepository.findById(id).isPresent()) throw new ProductIdCannotFoundException();
         Product product = productRepository.findById(id).get();
-
         ProductResponse productResponse=converterService.getProductConverterService().productToProductResponse(product);
+        log.info("get product by id successfull returned product  : {}",product.getName());
         return new GeneralDataResponse<>(ProductResponseMessage.PRODUCT_GET_BYID_SUCCESSFUL,true,productResponse);
     }
 
     @Override
     public GeneralResponse createProduct(ProductDto productDto)throws AddingProductNonExistCategoryException {
-        checkCategoryIsAcceptable(productDto); // check category is already exist , if not exist category throw error , if exist category add product
+        checkCategoryIsAcceptable(productDto); //check category is already exist , if not exist category throw error , if exist category add product
         Product product = converterService.getProductConverterService().productDtoToProduct(productDto);//
         productRepository.save(product);
+        log.info("create product : successfull created product :{}",product.getName());
         return new GeneralSuccessfullResponse(ProductResponseMessage.PRODUCT_CREATED_SUCCESSFULL);
     }
 
 
     @Override
     public GeneralResponse getProductsByCategoryName(String categoryName) {
+        /* TODO doesnt work later complete this method
         return new GeneralDataResponse<>(productRepository.getProductsByCategoryName(categoryName));
+         */
+        return null;
     }
 
     @Override
     public GeneralResponse deleteProductById(Long id) {
         if(productRepository.existsById(id)) throw new CustomerIdCannotFountException();
         productRepository.deleteById(id);
+        log.info("deleteProductById : product deleted successfull");
         return new GeneralSuccessfullResponse(ProductResponseMessage.PRODUCT_DELETED_SUCCESSFULL);
     }
     @Override
@@ -67,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
          List<ProductResponse> products=productRepository.findAll().stream()
                 .filter(product -> product.getStock().getQuantity().compareTo(BigDecimal.ZERO)>0)
                 .map(product -> converterService.getProductConverterService().productToProductResponse(product)).collect(Collectors.toList());
+                log.info("getAllProducts : all product : {}",products);
         return new GeneralDataResponse<>("all product returned ", true,products);
     }
 
