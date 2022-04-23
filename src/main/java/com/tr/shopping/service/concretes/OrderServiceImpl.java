@@ -11,15 +11,15 @@ import com.tr.shopping.core.response.GeneralErrorResponse;
 import com.tr.shopping.core.response.GeneralResponse;
 import com.tr.shopping.core.response.GeneralSuccessfullResponse;
 import com.tr.shopping.entity.*;
-import com.tr.shopping.repository.*;
-import com.tr.shopping.service.abstracts.CustomerDiscountService;
-import com.tr.shopping.service.abstracts.OrderService;
+import com.tr.shopping.repository.OrderDetailRepository;
+import com.tr.shopping.service.abstracts.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -27,11 +27,11 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
-    private final CustomerRepository customerRepository;
-    private final CustomerPaymentRepository customerPaymentRepository;
-    private final BasketRepository basketRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final OrderItemDetailRepository orderItemDetailRepository;
+    private final CustomerService customerService;
+    private final CustomerPaymentService customerPaymentService;
+    private final BasketService basketService;
+    private final OrderItemService orderItemService;
+  private final OrderDetailRepository orderDetailRepository;
     private final BankServiceAdapter bankServiceAdapter;
     private final ConverterService converterService;
     private final CustomerDiscountService customerDiscountService;
@@ -44,9 +44,9 @@ public class OrderServiceImpl implements OrderService {
        if(checkBasketNonExists(orderItemDto.getBasketId())) throw new BasketIdCannotFoundException();
        if(!isBasketBelongCustomer(orderItemDto)) throw new CustomerBasketCannotFoundException();
        if(checkCustomerHasNoPayment(orderItemDto.getCustomerId())) throw new CustomerPaymentCannotFoundException();
-        Basket basket = basketRepository.findById(orderItemDto.getBasketId()).get();
-        Customer customer = customerRepository.findById(orderItemDto.getCustomerId()).get();
-        CustomerPayment customerPayment=customerPaymentRepository.getCustomerPaymentByCustomerId(orderItemDto.getCustomerId());
+        Basket basket = basketService.getById(orderItemDto.getBasketId());
+        Customer customer = customerService.getCustomerById(orderItemDto.getCustomerId()).getData();
+        CustomerPayment customerPayment=customerPaymentService.getCustomerPaymentByCustomerId(orderItemDto.getCustomerId());
         // payment status
         PaymentStatus paymentStatus=new PaymentStatus();
         paymentStatus.setName(OrderConstant.ORDER_STATUS_PENDING);
@@ -89,11 +89,11 @@ public class OrderServiceImpl implements OrderService {
         orderDetail.setShipMethod(shipMethodUpfs);
         orderItem.setOrderDetail(orderDetail);
 
-        orderItemRepository.save(orderItem);
+        orderItemService.save(orderItem);
         log.info("order item created successfull");
         String verifyCode=UUID.randomUUID().toString();
         customerPayment.setPaymentVerifyCode(verifyCode);
-        customerPaymentRepository.save(customerPayment); // send verify code for payment
+        customerPaymentService.save(customerPayment); // send verify code for payment
         log.info("create payment code and send verify code for payment verified ->{} ",verifyCode);
 
         OrderResponse orderResponse=new OrderResponse();
@@ -109,17 +109,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public GeneralResponse verifyCustomerOrder(long customerId, CustomerPaymentVerifyDto customerPaymentVerifyDto) {
         String verifyCustomerCode=customerPaymentVerifyDto.getVerifyCode();
-        CustomerPayment customerPayment = customerPaymentRepository.getCustomerPaymentByCustomerId(customerId);
+        CustomerPayment customerPayment = customerPaymentService.getCustomerPaymentByCustomerId(customerId);
         if(!customerPayment.getPaymentVerifyCode().equals(verifyCustomerCode)) throw new VerifyCodeNotMatchException();
         log.info("verifyCustomerOrder: verify accepted :{}",customerPaymentVerifyDto.getVerifyCode());
         // this senario like add payment ziraat bank and wait response
         if(bankServiceAdapter.addPayment(customerPayment.getAccountNo(),customerPayment.getExpiry(),customerPayment.getPaymentType(),customerPayment.getProvider())){
-            OrderDetail orderDetailByCustomer = orderItemDetailRepository.getOrderDetailByCustomerId(customerId);
+            OrderDetail orderDetailByCustomer = orderDetailRepository.getOrderDetailByCustomerId(customerId);
             orderDetailByCustomer.getOrderStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
             orderDetailByCustomer.getPaymentDetail().getStatus().setName(OrderConstant.PAYMENT_STATUS_ACCEPT);
-            orderItemDetailRepository.save(orderDetailByCustomer);
+            orderDetailRepository.save(orderDetailByCustomer);
             customerPayment.setPaymentVerifyCode(null); // delete verify code customer payment table
-            customerPaymentRepository.save(customerPayment);
+            customerPaymentService.save(customerPayment);
             log.info("verifyCustomerOrder: verify accepted  and bank returned true for payment");
             return new GeneralSuccessfullResponse("Code verified.Payment Successfull");
         }
@@ -132,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public GeneralResponse getCustomerOrderById(long customerId) {
         if(!checkCustomerHasOrderByCustomerId(customerId)) throw new OrderCannotFoundException();
-        OrderDetail orderDetail=orderItemDetailRepository.getOrderDetailByCustomerId(customerId);
+        OrderDetail orderDetail=orderDetailRepository.getOrderDetailByCustomerId(customerId);
         log.info("getCustomerOrderById : Customer order returned successfull : {}",orderDetail.getOrderStatus());
         return new GeneralDataResponse<>(converterService.getOrderDetailConverterService().orderDetailToOrderDetailResponse(orderDetail));
     }
@@ -143,18 +143,19 @@ public class OrderServiceImpl implements OrderService {
         return customer.getCoupons().size()>0 ;
     }
     private boolean checkCustomerHasOrderByCustomerId(Long customerId) {
-        return orderItemDetailRepository.existsOrderDetailByCustomerId(customerId);
+        return Objects.isNull(orderDetailRepository.getOrderDetailByCustomerId(customerId));
     }
     private boolean checkBasketNonExists(Long basketId) {
-        return !basketRepository.existsById(basketId);
+        return Objects.isNull(basketService.getById(basketId));
     }
     private boolean isBasketBelongCustomer(OrderItemDto orderItemDto) {
-        return customerRepository.findById(orderItemDto.getCustomerId()).get().getBasket().getId().equals(orderItemDto.getBasketId());
+        return customerService.getCustomerById(orderItemDto.getCustomerId()).getData().getBasket().getId().equals(orderItemDto.getBasketId());
     }
     private boolean checkCustomerHasNoPayment(Long customerId) {
-        return !customerPaymentRepository.existsCustomerPaymentByCustomerId(customerId);
+        return Objects.isNull(customerPaymentService.getCustomerPaymentByCustomerId(customerId));
     }
+
     private boolean checkCustomerNonExists(Long customerId) {
-        return !customerRepository.existsById(customerId);
+        return !customerService.getCustomerById(customerId).getIsSuccessful();
     }
 }

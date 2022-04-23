@@ -1,5 +1,6 @@
 package com.tr.shopping.service.concretes;
 
+import com.tr.shopping.service.abstracts.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,10 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ConverterService converterService;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Override
-    public GeneralResponse getProductById(Long id) {
+    public GeneralDataResponse getProductById(Long id) {
         if(!productRepository.findById(id).isPresent()) throw new ProductIdCannotFoundException();
         Product product = productRepository.findById(id).get();
         ProductResponse productResponse=converterService.getProductConverterService().productToProductResponse(product);
@@ -67,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
         return new GeneralSuccessfullResponse(ProductResponseMessage.PRODUCT_DELETED_SUCCESSFULL);
     }
     @Override
-    public GeneralResponse getAllProducts() { // get all products . returned product if  stock > 0
+    public GeneralDataResponse getAllProducts() { // get all products . returned product if  stock > 0
          List<ProductResponse> products=productRepository.findAll().stream()
                 .filter(product -> product.getStock().getQuantity().compareTo(BigDecimal.ZERO)>0)
                 .map(product -> converterService.getProductConverterService().productToProductResponse(product)).collect(Collectors.toList());
@@ -75,6 +76,9 @@ public class ProductServiceImpl implements ProductService {
         return new GeneralDataResponse<>("all product returned ", true,products);
     }
 
+    public boolean compareAddedQuantityToProductQuantity(Long productId, BigDecimal quantity) {
+        return productRepository.findById(productId).get().getStock().getQuantity().compareTo(quantity)<0;
+    }
     private void checkCategoryIsAcceptable(ProductDto productDto){
         if(isAlreadyExistCategory(productDto.getCategory())){
             Category findcategoryInParent = FindParentCategory(productDto.getCategory());
@@ -85,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
     }
     private Boolean isAlreadyExistCategory(Category category){
         if(Objects.isNull(category)) return true;
-        Category categoryByName = categoryRepository.getCategoryByName(category.getName());
+        Category categoryByName = categoryService.getCategoryByName(category.getName());
         if(categoryByName==null) {
             return false;
         }
@@ -94,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
     }
     private Category FindParentCategory(Category category){
         if(Objects.isNull(category)) return null;
-        Category categoryByName = categoryRepository.getCategoryByName(category.getName());
+        Category categoryByName = categoryService.getCategoryByName(category.getName());
         if(categoryByName!=null) {
             return categoryByName;
         }

@@ -4,6 +4,7 @@ import com.tr.shopping.core.model.dto.CustomerCouponDto;
 import com.tr.shopping.core.model.dto.CustomerPaymentDto;
 import com.tr.shopping.entity.*;
 import com.tr.shopping.repository.*;
+import com.tr.shopping.service.abstracts.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import com.tr.shopping.core.model.dto.CustomerDto;
 import com.tr.shopping.core.model.response.BasketResponse;
 import com.tr.shopping.core.model.response.CustomerResponse;
 import com.tr.shopping.core.model.response.ProductResponse;
-import com.tr.shopping.service.abstracts.CustomerService;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,11 +31,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
-    private final CustomerCouponRepository customerCouponRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final ConverterService converterService;
-    private final CustomerPaymentRepository customerPaymentRepository;
-    private final CategoryRepository categoryRepository;
+    private final CustomerPaymentService customerPaymentService;
+    private final CategoryService categoryService;
+    private final CustomerCouponService customerCouponService;
+
 
 
 
@@ -52,28 +53,28 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer=customerRepository.findById(customerId).get();
         CustomerPayment customerPayment=converterService.getPaymentConverterService().customerPaymentDtoToCustomerPayment(customerPaymentDto,customer);
         log.info("customer {} ->  payment saved successfull in customer payment database ",customer.getEmail());
-        customerPaymentRepository.save(customerPayment);
+        customerPaymentService.save(customerPayment);
         return new GeneralSuccessfullResponse("created payment successfull");
     }
 
     @Override
-    public GeneralResponse getCustomerVerifyCode(long customerId) {
+    public GeneralDataResponse getCustomerVerifyCode(long customerId) {
         if(!checkCustomerIdFound(customerId)) throw new CustomerIdCannotFountException();
         if(checkCustomerIsDeleted(customerId)) throw new CustomerDeletedException();
         log.info("Customer verified code returned successfull");
-        return new GeneralDataResponse<>(customerPaymentRepository.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode(),true,"Customer verified code returned successful");
+        return new GeneralDataResponse<>("Customer verified code returned successful",true,customerPaymentService.getCustomerPaymentByCustomerId(customerId).getPaymentVerifyCode());
     }
 
     @Override
     public GeneralResponse createCouponForCustomer(long customerId, CustomerCouponDto customerCouponDto) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerIdCannotFountException::new);
         CustomerCoupon coupon=converterService.getCustomerCouponConverterService().customerCouponDtoToCustomerCoupon(customerCouponDto);
-        Category category=categoryRepository.getCategoryByName(customerCouponDto.getCategory().getName());
+        Category category=categoryService.getCategoryByName(customerCouponDto.getCategory().getName());
         if(Objects.isNull(category)) throw new CategoryCannotFoundException();
         coupon.setCategory(category);
         coupon.setCustomer(customer);
         customer.addCouponCustomer(coupon);
-        customerCouponRepository.save(coupon);
+        customerCouponService.save(coupon);
         log.info("Customer coupon created successfull for ->",customer.getEmail());
         return new GeneralSuccessfullResponse("Cupon created successfull");
     }
@@ -91,11 +92,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public GeneralResponse getCustomerById(long id) {
+    public GeneralDataResponse getCustomerById(long id) {
         if(checkCustomerIsDeleted(id)) throw new CustomerDeletedException(CustomerResponseMessage.CUSTOMER_CANNOT_ACCESS_DELETED_EXCEPTION);
         log.info("Customer returned successfull ");
 
-        return new GeneralDataResponse<>(converterService.getCustomerConverterService().customerToCustomerResponse(customerRepository.findById(id).get()));
+        return new GeneralDataResponse<>("successfull",true,converterService.getCustomerConverterService().customerToCustomerResponse(customerRepository.findById(id).get()));
     }
 
     @Override
@@ -168,10 +169,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     private boolean compareAddedQuantityToProductQuantity(Long productId, BigDecimal quantity) {
-        return productRepository.findById(productId).get().getStock().getQuantity().compareTo(quantity)<0;
+        return productService.getProductById(productId).getData().getStock().getQuantity().compareTo(quantity)<0;
     }
+
     public Boolean checkExistsProductId(long productId){
-        return productRepository.existsById(productId);
+        return productService.getProductById(productId).getIsSuccessful();
     }
     private boolean checkCustomerIsDeleted(long customerId) {
         if(customerRepository.findById(customerId).get().getIsDeleted()) return true;

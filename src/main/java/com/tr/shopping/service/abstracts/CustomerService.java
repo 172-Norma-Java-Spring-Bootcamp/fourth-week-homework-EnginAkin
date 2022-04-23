@@ -4,16 +4,18 @@ import com.tr.shopping.core.exception.CustomerIdCannotFountException;
 import com.tr.shopping.core.exception.ProductIdCannotFoundException;
 import com.tr.shopping.core.model.dto.CustomerCouponDto;
 import com.tr.shopping.core.model.dto.CustomerPaymentDto;
+import com.tr.shopping.core.response.GeneralDataResponse;
 import com.tr.shopping.core.response.GeneralResponse;
 import com.tr.shopping.core.model.dto.BasketItemDto;
 import com.tr.shopping.core.model.dto.CustomerDto;
+import com.tr.shopping.entity.Customer;
 
 public interface CustomerService {
     GeneralResponse createCustomer(CustomerDto customerDto);
 
     GeneralResponse getCustomerAddress(long id);
 
-    GeneralResponse getCustomerById(long id);
+    GeneralDataResponse<Customer> getCustomerById(long id);
 
     GeneralResponse deleteCustomerById(long customerId);
 
@@ -27,7 +29,7 @@ public interface CustomerService {
 
     GeneralResponse addCustomerPayment(CustomerPaymentDto customerPaymentDto,long customerId);
 
-    GeneralResponse getCustomerVerifyCode(long id);
+    GeneralDataResponse getCustomerVerifyCode(long id);
 
     GeneralResponse createCouponForCustomer(long customerId, CustomerCouponDto customerCouponDto);
 }

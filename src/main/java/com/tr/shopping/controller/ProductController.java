@@ -1,5 +1,7 @@
 package com.tr.shopping.controller;
 
+import com.tr.shopping.core.constant.ProductResponseMessage;
+import com.tr.shopping.core.response.GeneralDataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.tr.shopping.core.exception.AddingProductNonExistCategoryException;
@@ -24,7 +26,7 @@ public class ProductController {
     }
     @GetMapping(path = "/{productId}")
     public GeneralResponse getProductById(@PathVariable("productId") int id){
-        return productService.getProductById((long)id);
+        return new GeneralDataResponse<>(ProductResponseMessage.PRODUCT_GET_BYID_SUCCESSFUL,true,productService.getProductById((long)id));
     }
     @GetMapping
     public GeneralResponse getProducts(){

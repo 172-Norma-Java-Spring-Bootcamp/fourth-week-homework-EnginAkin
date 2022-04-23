@@ -37,8 +37,6 @@ Gsrc/main/java/com/tr/shopping/repository/OrderItemDetailRepository.java,f\8\f8
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
 }
 Msrc/main/java/com/tr/shopping/core/exception/VerifyCodeNotMatchException.java,9\6\96e8633326ebee9bb1c32eb92991a3e5f43cf721
-t
-Dsrc/main/java/com/tr/shopping/service/abstracts/CategoryService.java,2\6\26288f099c8f0e8bdd9ba2887ace597883cc24dc
 g
 7src/main/java/com/tr/shopping/entity/PaymentDetail.java,7\3\731012bf00881eb04b1dcd1991a7e9974497f0af
 d
@@ -55,8 +53,6 @@ i
 9src/main/java/com/tr/shopping/entity/CustomerAddress.java,2\0\20b4ac745d53976a94a2095f453f6c3397b5a092
 _
 /src/main/java/com/tr/shopping/entity/Brand.java,2\3\23402fb70f61133899d73b4e4d46c42e9e958f67
-s
-Csrc/main/java/com/tr/shopping/service/abstracts/ProductService.java,6\b\6be8cbfe2f242c1665e55c6e8acb2e92e6744839
 `
 0src/main/java/com/tr/shopping/entity/Gender.java,3\f\3fdaed0ff9c3b698afbc98ef97b2c40913e8cd83
 t
@@ -67,8 +63,6 @@ a
 1src/main/java/com/tr/shopping/entity/Product.java,0\7\07eb6883f4b4358f83a410730d7ac6eac232037f
 j
 :src/main/java/com/tr/shopping/entity/ProductInventory.java,3\a\3a7f6600a167f7c2803b5f007b704150df600121
-t
-Dsrc/main/java/com/tr/shopping/service/abstracts/CustomerService.java,a\5\a51fa2fc5bd173c40fb0cee187c64bb4fb37f643
 Š
 Zsrc/main/java/com/tr/shopping/core/converter/abstracts/CustomerCouponConverterService.java,0\e\0e37c9fb3e6f8b695fc6d7f762acd9956409690c
 b
@@ -91,8 +85,6 @@ Dsrc/main/java/com/tr/shopping/core/model/response/OrderResponse.java,6\c\6cdc6
 Lsrc/main/java/com/tr/shopping/service/abstracts/CustomerDiscountService.java,b\d\bdd9dc80459b4e769740f9aca4a3a82f2b6323d9
 c
 3src/main/java/com/tr/shopping/entity/OrderItem.java,6\5\658c8ddbfd20a8e8f8f2e881550cd9603080b618
-v
-Fsrc/main/java/com/tr/shopping/repository/CustomerCouponRepository.java,c\2\c2319d57a86553901778064e55cfa4036651e4af
 w
 Gsrc/main/java/com/tr/shopping/core/constant/ProductResponseMessage.java,c\c\cca9151e58fec7c77e871e3e0af4ab63e8d67f6e
 x
@@ -131,9 +123,7 @@ n
 >src/main/java/com/tr/shopping/core/model/dto/OrderItemDto.java,2\a\2aaccfdbc7cdc2aa93831622b90cc4e8a3913123
 m
 =src/main/java/com/tr/shopping/controller/OrderController.java,5\4\547567578c707221bf4e835e6841de612e981433
-l
-<src/main/java/com/tr/shopping/core/model/dto/ProductDto.java,7\e\7e24371c547566b1211c53b305efb348db73fc4c
-o
-?src/main/java/com/tr/shopping/controller/ProductController.java,a\0\a0d01a78976916f065cf1b6918b47aceaf578a70
 b
 2src/main/java/com/tr/shopping/entity/Category.java,1\d\1dc41058bf3f68c3e838c393b04e9a138b6dafbe
+v
+Fsrc/main/java/com/tr/shopping/core/model/response/ProductResponse.java,2\f\2f94ac95947bdd5f9b7fc2435bb01c8dfa36a5f4

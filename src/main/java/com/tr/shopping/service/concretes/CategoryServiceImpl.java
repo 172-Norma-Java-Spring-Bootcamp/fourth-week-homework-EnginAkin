@@ -41,7 +41,10 @@ public class CategoryServiceImpl implements CategoryService {
         return new GeneralErrorResponse(CategoryResponseMessage.CATEGORY_CREATE_CATEGORY_UNSUCCESSFULL);
     }
 
-
+    @Override
+    public Category getCategoryByName(String name) {
+        return categoryRepository.getCategoryByName(name);
+    }
 
 
     private Category FindParentCategory(Category category){
