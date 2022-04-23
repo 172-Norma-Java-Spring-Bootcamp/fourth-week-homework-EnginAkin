@@ -41,7 +41,6 @@ public class ProductServiceImpl implements ProductService {
         log.info("get product by id successfull returned product  : {}",product.getName());
         return new GeneralDataResponse<>(ProductResponseMessage.PRODUCT_GET_BYID_SUCCESSFUL,true,productResponse);
     }
-
     @Override
     public GeneralResponse createProduct(ProductDto productDto)throws AddingProductNonExistCategoryException {
         checkCategoryIsAcceptable(productDto); //check category is already exist , if not exist category throw error , if exist category add product
@@ -50,7 +49,6 @@ public class ProductServiceImpl implements ProductService {
         log.info("create product : successfull created product :{}",product.getName());
         return new GeneralSuccessfullResponse(ProductResponseMessage.PRODUCT_CREATED_SUCCESSFULL);
     }
-
 
     @Override
     public GeneralResponse getProductsByCategoryName(String categoryName) {
@@ -76,9 +74,6 @@ public class ProductServiceImpl implements ProductService {
         return new GeneralDataResponse<>("all product returned ", true,products);
     }
 
-    public boolean compareAddedQuantityToProductQuantity(Long productId, BigDecimal quantity) {
-        return productRepository.findById(productId).get().getStock().getQuantity().compareTo(quantity)<0;
-    }
     private void checkCategoryIsAcceptable(ProductDto productDto){
         if(isAlreadyExistCategory(productDto.getCategory())){
             Category findcategoryInParent = FindParentCategory(productDto.getCategory());

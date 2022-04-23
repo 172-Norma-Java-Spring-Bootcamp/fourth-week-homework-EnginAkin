@@ -27,11 +27,11 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+    private final OrderDetailRepository orderDetailRepository;
     private final CustomerService customerService;
     private final CustomerPaymentService customerPaymentService;
     private final BasketService basketService;
     private final OrderItemService orderItemService;
-  private final OrderDetailRepository orderDetailRepository;
     private final BankServiceAdapter bankServiceAdapter;
     private final ConverterService converterService;
     private final CustomerDiscountService customerDiscountService;
