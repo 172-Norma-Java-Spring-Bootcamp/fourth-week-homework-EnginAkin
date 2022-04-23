@@ -1,0 +1,11 @@
+
+@
+java:S5411N"*Use the primitive boolean expression here.(€Ê›è
+e
+java:S3655'"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(¬‚ê2
+V	java:S1258"<This block of commented-out lines of code should be removed.(¬◊ˇ√¸ˇˇˇˇ
+M
+java:S11357"2Complete the task associated to this TODO comment.(˚†‰Ô˚ˇˇˇˇ
+m
+java:S6204H"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ºı≠‡˛ˇˇˇˇ
+c	java:S100^"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Éº±–

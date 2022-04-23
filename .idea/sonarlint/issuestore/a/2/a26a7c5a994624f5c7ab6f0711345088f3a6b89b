@@ -1,0 +1,29 @@
+
+K
+java:S3740”"/Provide the parametrized type for this generic.(©ĞÄØùÿÿÿÿ
+F
+java:S3740"/Provide the parametrized type for this generic.(Ñ›¹
+E
+java:S5411w"*Use the primitive boolean expression here.(›Â©Ëşÿÿÿÿ
+@
+java:S5411³"*Use the primitive boolean expression here.(¯îñ4
+f
+java:S36555"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(°ä÷
+l
+java:S3655‘"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(é…®éşÿÿÿÿ
+f
+java:S3655h"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(°ä÷
+g
+java:S3655š"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(ÀÏÒ‹
+f
+java:S3655y"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(°ä÷
+f
+java:S3655³"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(¯îñ4
+k
+java:S3655c"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(Ùì·€ùÿÿÿÿ
+n
+java:S6204œ"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(í¼‰úÿÿÿÿ
+i
+java:S6204¤"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ÊÚ¢Ÿ
+W
+java:S1126³"AReplace this if-then-else statement by a single return statement.(¯îñ4
